@@ -2,6 +2,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
 
 const app = express();
 
@@ -29,6 +31,12 @@ app.use("/api/subscriptions", require("./routes/subscriptions"));
 app.use("/api/preferences", require("./routes/preferences"));
 app.use("/api/profile", require("./routes/profile"));
 app.use("/api/admin", require("./routes/admin"));
+
+// ── Swagger Docs ─────────────────────────────────────────────────────────────
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: "Nagendra's Finance AI API",
+  customCss: ".swagger-ui .topbar { background: #060D22 } .swagger-ui .topbar-wrapper img { display:none }",
+}));
 
 // ── Health check ─────────────────────────────────────────────────────────────
 app.get("/api/health", (_, res) =>
