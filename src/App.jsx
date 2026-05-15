@@ -160,6 +160,10 @@ const T = {
   t2: "#8BA3CC",
   t3: "#3D567A",
   sidebar: "#04091C",
+  glass: "rgba(11,21,48,0.7)",
+  glassBorder: "rgba(100,140,255,0.15)",
+  glow: "0 0 40px rgba(78,126,245,0.15)",
+  cardShadow: "0 8px 32px rgba(0,0,10,0.4)",
 };
 
 // ─────────────────────────────────────────────
@@ -337,9 +341,13 @@ const Card = ({ children, style = {}, onClick }) => (
   <div
     onClick={onClick}
     style={{
-      background: T.bg2,
-      borderRadius: 16,
-      border: `1px solid ${T.border}`,
+      background: "rgba(11,21,48,0.8)",
+      backdropFilter: "blur(20px)",
+      WebkitBackdropFilter: "blur(20px)",
+      border: "1px solid rgba(100,140,255,0.15)",
+      borderRadius: 20,
+      boxShadow: "0 8px 32px rgba(0,0,10,0.4)",
+      marginBottom: 16,
       ...style,
     }}
   >
@@ -384,79 +392,52 @@ const Chip = ({ label, active, onClick }) => (
   </button>
 );
 
-const StatCard = ({ label, value, sub, Icon, color = T.primary, trend }) => (
-  <Card style={{ padding: "16px 18px" }}>
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: 8,
-      }}
-    >
-      <div style={{ minWidth: 0, flex: 1, overflow: "hidden" }}>
-        <p
-          style={{
-            color: T.t2,
-            fontSize: 10,
-            fontWeight: 600,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            marginBottom: 6,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {label}
-        </p>
-        <p
-          style={{
-            color: T.t1,
-            fontSize: 20,
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-            lineHeight: 1,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {value}
-        </p>
-        {sub && (
-          <p
-            style={{
-              color: trend >= 0 ? T.green : T.red,
-              fontSize: 11,
-              marginTop: 5,
-              fontWeight: 500,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {sub}
-          </p>
-        )}
-      </div>
-      <div
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: 9,
-          background: color + "1A",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+const StatCard = ({ label, value, sub, Icon, color = T.primary, trend }) => {
+  const isMobile = useMobile();
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, rgba(11,21,48,0.9) 0%, ${color}18 100%)`,
+      border: `1px solid ${color}30`,
+      borderRadius: 20,
+      padding: isMobile ? "18px 16px" : "22px 20px",
+      boxShadow: `0 8px 32px rgba(0,0,10,0.3), 0 0 0 1px ${color}10`,
+      flex: 1,
+      minWidth: 0,
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Glow orb */}
+      <div style={{
+        position: "absolute", top: -20, right: -20,
+        width: 80, height: 80, borderRadius: "50%",
+        background: `radial-gradient(circle, ${color}30, transparent 70%)`,
+        pointerEvents: "none",
+      }} />
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 12,
+          background: `${color}20`, border: `1px solid ${color}40`,
+          display: "flex", alignItems: "center", justifyContent: "center",
           flexShrink: 0,
-        }}
-      >
-        <Icon size={17} color={color} />
+        }}>
+          <Icon size={18} color={color} />
+        </div>
+        <span style={{ fontSize: 10, color: T.t3, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", textAlign: "right", maxWidth: 80 }}>{label}</span>
       </div>
+      <div style={{
+        fontSize: isMobile ? 22 : 26,
+        fontWeight: 800,
+        color: T.t1,
+        letterSpacing: "-0.02em",
+        lineHeight: 1,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: trend >= 0 ? T.green : T.red, marginTop: 6, fontWeight: 600 }}>{sub}</div>}
     </div>
-  </Card>
-);
+  );
+};
 
 const ProgressBar = ({ pct, color, height = 6 }) => (
   <div
@@ -617,14 +598,20 @@ const AuthPage = ({ onLogin }) => {
     <div
       style={{
         minHeight: "100vh",
-        background: T.bg0,
+        background: "linear-gradient(135deg, #03071A 0%, #0a0f2e 50%, #03071A 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: 20,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 400 }}>
+      {/* Floating orbs */}
+      <div style={{ position: "absolute", top: "10%", left: "20%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(78,126,245,0.15), transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "15%", right: "10%", width: 200, height: 200, borderRadius: "50%", background: "radial-gradient(circle, rgba(166,124,248,0.12), transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "50%", left: "-5%", width: 250, height: 250, borderRadius: "50%", background: "radial-gradient(circle, rgba(34,212,170,0.08), transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ width: "100%", maxWidth: 400, position: "relative", zIndex: 1 }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div
@@ -1045,7 +1032,7 @@ const TopBar = ({ title, sub }) => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: 28,
+        marginBottom: 24,
         gap: 12,
       }}
     >
@@ -1072,19 +1059,20 @@ const TopBar = ({ title, sub }) => {
         <div style={{ minWidth: 0 }}>
           <h1
             style={{
-              color: T.t1,
-              fontSize: isMobile ? 18 : 22,
-              fontWeight: 700,
+              fontSize: isMobile ? 22 : 26,
+              fontWeight: 800,
+              background: `linear-gradient(135deg, ${T.t1}, ${T.primary})`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
               letterSpacing: "-0.02em",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              lineHeight: 1.2,
             }}
           >
             {title}
           </h1>
           {sub && (
-            <p style={{ color: T.t2, fontSize: isMobile ? 11 : 13, marginTop: 4 }}>
+            <p style={{ color: T.t3, fontSize: 12, marginTop: 3, fontWeight: 500 }}>
               {sub}
             </p>
           )}
@@ -4172,8 +4160,9 @@ export default function App() {
         />
         <main
           style={{
-            marginLeft: sideW,
+            marginLeft: isMobile ? 0 : sideW,
             padding: isMobile ? "20px 16px" : "28px 36px",
+            paddingBottom: isMobile ? 100 : undefined,
             minHeight: "100vh",
             transition: "margin-left 0.25s ease",
             overflowX: "hidden",
@@ -4187,6 +4176,40 @@ export default function App() {
           {page === "settings" && <SettingsPage user={user} onUserUpdate={handleUserUpdate} onLogout={handleLogout} />}
           {!["dashboard","transactions","analytics","budget","settings"].includes(page) && <DashboardPage user={user} setPage={setPage} />}
         </main>
+        {isMobile && (
+          <div style={{
+            position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 300,
+            background: "rgba(4,9,28,0.95)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            borderTop: "1px solid rgba(100,140,255,0.15)",
+            display: "flex",
+            paddingBottom: "env(safe-area-inset-bottom, 8px)",
+          }}>
+            {NAV.map(({ id, label, Icon }) => {
+              const active = page === id;
+              return (
+                <button key={id} onClick={() => setPage(id)} style={{
+                  flex: 1, display: "flex", flexDirection: "column",
+                  alignItems: "center", justifyContent: "center",
+                  padding: "10px 4px 6px",
+                  background: "none", border: "none", cursor: "pointer",
+                  gap: 4,
+                }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 12,
+                    background: active ? T.primaryDim : "transparent",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    transition: "all 0.2s",
+                  }}>
+                    <Icon size={20} color={active ? T.primary : T.t3} />
+                  </div>
+                  <span style={{ fontSize: 10, fontWeight: active ? 700 : 400, color: active ? T.primary : T.t3 }}>{label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </MobileMenuCtx.Provider>
   );
